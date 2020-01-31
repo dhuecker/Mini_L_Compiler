@@ -4,6 +4,7 @@ int LineRow = 1;
 int LinCol = 0;
 char temp = 0;
 int i = 0;
+int stop = 0;
 
 static const char* KeyWords[] = {
 "if", "endif", "else", "then", "true", "false", "return", "and", "or", "not", "read", "write", "beginloop", "endloop", "continue", "in", "while", "do", "foreach", "of", "beginbody", "endbody", "integer", "array", "fuction", "beginparms", "endparams", "beginlocals", "endlocals" };
@@ -63,11 +64,14 @@ CHAR [0-9a-zA-Z_]
 
 for(; i < NumWords; ++i){
 
-
-if(strcmp(yytext, KeyWords[i] == 0)){
-printf("%s\n", MapWords[i]);
+if (stop == 0){
+if(strcmp(yytext, KeyWords[i])){
+printf("%s\n", MapWords[--i]);
 temp = 1;
+stop = 1;
   }
+}
+
 }
 
 if (temp == 0){

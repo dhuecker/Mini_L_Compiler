@@ -56,7 +56,7 @@ CHAR [0-9a-zA-Z_]
 {NEWLINE}+      {LineRow += yyleng; LinCol = 0;}
 {WHITESPACE}+   {LinCol += yyleng;}
 
-"##".*{NEWLINE} LinCol = 0; ++LineRow;
+"##".*{NEWLINE} {LinCol = 0; ++LineRow;}
 
 {LETTER}({CHAR}*{ALPHANUMBER}+)? {
 

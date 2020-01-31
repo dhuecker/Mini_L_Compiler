@@ -1,21 +1,20 @@
 %{
+
 int LineRow = 1;
 int LinCol = 0;
+char temp = 0;
+int i = 0;
 
-static const char KeyWords[] = {
-"if", "endif", "else", "then", "true", "false", "return", "and", "or", "not",
-"read", "write", "beginloop", "endloop", "continue", "in", "while", "do", "foreach",
-"of", "beginbody", "endbody", "integer", "array", "fuction", "beginparms", "endparams",
-"beginlocals", "endlocals" };
+static const char* KeyWords[] = {
+"if", "endif", "else", "then", "true", "false", "return", "and", "or", "not", "read", "write", "beginloop", "endloop", "continue", "in", "while", "do", "foreach", "of", "beginbody", "endbody", "integer", "array", "fuction", "beginparms", "endparams", "beginlocals", "endlocals" };
 
-static const char MapWords[] = {
+static const char* MapWords[] = {
 "IF", "ENDIF", "ELSE", "THEN", "TRUE", "FALSE", "RETURN", "AND", "OR", "NOT",
 "READ", "WRITE", "BEGINLOOP", "ENDLOOP", "CONTINUE", "IN", "WHILE", "DO", "FOREACH",
 "OF", "BEGINBODY", "ENDBODY", "INTEGER", "ARRAY", "FUNCTION", "BEGINPARMS", "ENDPARMS",
 "BEGINLOCALS", "ENDLOCALS" };
 
 const int NumWords = sizeof(KeyWords)/ sizeof(KeyWords[0]);
-
 
 %}
 
@@ -60,8 +59,7 @@ CHAR [0-9a-zA-Z_]
 
 {LETTER}({CHAR}*{ALPHANUMBER}+)? {
 
-char temp = 0;
-int = 0;
+
 
 for(; i < NumWords; ++i){
 
@@ -86,28 +84,27 @@ LinCol += yyleng;
 }
 
 {LETTER}({CHAR}*ALPHANUMBER+)?"_" {
-printf("Error at line %d, column %d: Identifier /"%s/" can't end with an underscore \n", \ LineRow, LinCol, yytext);
+printf("Error at line %d, column %d: Identifier %s can't end with an underscore \n", LineRow, LinCol, yytext);
 exit(1);
+}
 
-({DIGIT}+{LETTER_UNDERSCORE}{CHAR}*)|("_"{CHAR}+){
-printf("Error at line %d, column %d: Identifier /"%s/" must begin with a letter \n", \ LineRow, LinCol, yytext);
+({DIGIT}+{LETTER_UNDERSCORE}{CHAR}*)|("_"{CHAR}+) {
+printf("Error at line %d, column %d: Identifier %s must begin with a letter \n", LineRow, LinCol, yytext);
 exit(1);
 
 }
 
-.{
-printf("Error at line %d, column %d: unrecognized symbol /"%s/" \n", \ LineRow, LinCol, yytext);
+. {
+printf("Error at line %d, column %d: unrecognized symbol %s\n", LineRow, LinCol, yytext);
 exit(1);
 
 }
-
-
 
 %%
 
 int main(int argc, char ** argv){
 
-/*if (argc == 2){
+if (argc == 2){
 yyin = fopen(argv[1], "r");
 if(yyin == 0){
 printf("Error with file: %s\n", argv[1]);
@@ -116,7 +113,7 @@ exit(1);
 }
 else {
   yyin = stdin;
-}*/
+}
   yylex();
 
   return 0;

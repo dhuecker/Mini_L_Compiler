@@ -1,0 +1,251 @@
+Nonterminals useless in grammar
+
+   Var
+   Vars
+   Term
+   MultiplicativeExpression
+   Expression
+   Expressions
+   Comp
+   RelationExpr
+   RelationExpr0
+   RelationAndExpr
+   BoolExpr
+   Statement
+   Statements
+   ElseStatement
+   Declaration
+   Declarations
+   Ident
+   Identifiers
+   Function
+
+
+Terminals unused in grammar
+
+   RETURN
+   TRUE
+   FALSE
+   CONTINUE
+   WRITE
+   READ
+   SEMICOLON
+   COLON
+   COMMA
+   R_PAREN
+   L_PAREN
+   R_SQUARE_BRACKET
+   L_SQUARE_BRACKET
+   BEGIN_LOOP
+   END_LOOP
+   IF
+   ENDIF
+   ELSE
+   THEN
+   DO
+   WHILE
+   FOREACH
+   IN
+   BEGIN_PARAMS
+   BEGIN_LOCALS
+   END_LOCALS
+   END_PARAMS
+   BEGIN_BODY
+   END_BODY
+   ARRAY
+   OF
+   INTEGER
+   FUNCTION
+   NUMBER
+   IDENT
+   NOT
+   ASSIGN
+   AND
+   OR
+   NEQ
+   EQ
+   LTE
+   GTE
+   GT
+   LT
+   ADD
+   SUB
+   MOD
+   MULT
+   DIV
+
+
+Rules useless in grammar
+
+    2 Var: Ident
+    3    | Ident L_SQUARE_BRACKET Expression R_SQUARE_BRACKET
+
+    4 Vars: Var COMMA Vars
+    5     | Var
+
+    6 Term: Ident L_PAREN Expressions R_PAREN
+    7     | L_PAREN Expression R_PAREN
+    8     | SUB L_PAREN Expression R_PAREN
+    9     | NUMBER
+   10     | SUB NUMBER
+   11     | SUB Var
+   12     | Var
+
+   13 MultiplicativeExpression: Term MOD MultiplicativeExpression
+   14                         | Term DIV MultiplicativeExpression
+   15                         | Term MULT MultiplicativeExpression
+   16                         | Term
+
+   17 Expression: MultiplicativeExpression SUB Expression
+   18           | MultiplicativeExpression ADD Expression
+   19           | MultiplicativeExpression
+
+   20 Expressions: Expression COMMA Expressions
+   21            | Expression
+   22            | %empty
+
+   23 Comp: GTE
+   24     | LTE
+   25     | GT
+   26     | LT
+   27     | NEQ
+   28     | EQ
+
+   29 RelationExpr: RelationExpr0
+   30             | NOT RelationExpr0
+
+   31 RelationExpr0: L_PAREN BoolExpr R_PAREN
+   32              | FALSE
+   33              | TRUE
+   34              | Expression Comp Expression
+
+   35 RelationAndExpr: RelationExpr AND RelationAndExpr
+   36                | RelationExpr
+
+   37 BoolExpr: RelationAndExpr OR BoolExpr
+   38         | RelationAndExpr
+
+   39 Statement: RETURN Expression
+   40          | CONTINUE
+   41          | WRITE Vars
+   42          | READ Vars
+   43          | FOREACH Ident BEGIN_LOOP Statements END_LOOP
+   44          | DO BEGIN_LOOP Statements END_LOOP WHILE BoolExpr
+   45          | WHILE BoolExpr BEGIN_LOOP Statements END_LOOP
+   46          | IF BoolExpr THEN Statements ElseStatement ENDIF
+   47          | Var ASSIGN Expression
+
+   48 Statements: Statement SEMICOLON
+   49           | Statement SEMICOLON Statements
+
+   50 ElseStatement: ELSE Statements
+   51              | %empty
+
+   52 Declaration: Identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
+   53            | Identifiers COLON INTEGER
+
+   54 Declarations: Declaration SEMICOLON Declarations
+   55             | %empty
+
+   56 Ident: IDENT
+
+   57 Identifiers: Ident COMMA Identifiers
+   58            | Ident
+
+   59 Function: Function Ident SEMICOLON BEGIN_PARAMS Declarations END_PARAMS BEGIN_LOCALS Declarations END_LOCALS BEGIN_BODY Statements END_BODY
+
+   60 Program: Function Program
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: %empty
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+RETURN (258)
+TRUE (259)
+FALSE (260)
+CONTINUE (261)
+WRITE (262)
+READ (263)
+SEMICOLON (264)
+COLON (265)
+COMMA (266)
+R_PAREN (267)
+L_PAREN (268)
+R_SQUARE_BRACKET (269)
+L_SQUARE_BRACKET (270)
+BEGIN_LOOP (271)
+END_LOOP (272)
+IF (273)
+ENDIF (274)
+ELSE (275)
+THEN (276)
+DO (277)
+WHILE (278)
+FOREACH (279)
+IN (280)
+BEGIN_PARAMS (281)
+BEGIN_LOCALS (282)
+END_LOCALS (283)
+END_PARAMS (284)
+BEGIN_BODY (285)
+END_BODY (286)
+ARRAY (287)
+OF (288)
+INTEGER (289)
+FUNCTION (290)
+NUMBER (291)
+IDENT (292)
+NOT (293)
+ASSIGN (294)
+AND (295)
+OR (296)
+NEQ (297)
+EQ (298)
+LTE (299)
+GTE (300)
+GT (301)
+LT (302)
+ADD (303)
+SUB (304)
+MOD (305)
+MULT (306)
+DIV (307)
+
+
+Nonterminals, with rules where they appear
+
+$accept (53)
+    on left: 0
+Program (54)
+    on left: 1, on right: 0
+
+
+State 0
+
+    0 $accept: . Program $end
+
+    $default  reduce using rule 1 (Program)
+
+    Program  go to state 1
+
+
+State 1
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 2
+
+
+State 2
+
+    0 $accept: Program $end .
+
+    $default  accept

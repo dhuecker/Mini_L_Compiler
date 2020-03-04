@@ -1,13 +1,43 @@
 %{
+#include <map>
+#include <vector>
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #define YY_NO_UNPUT
-int yyerror(const char* x);
+void yyerror(const char* x);
+std::string newLabel();
+std::string newTemp();
+char nothing[1] = "";
+extern int LinCol;
+extern int LineRow;
+extern char* pName;
+extern char* yytext;
+
+std::vector<std::string> mapWords = {
+"IF", "ENDIF", "ELSE", "THEN", "TRUE", "FALSE", "RETURN", "AND", "OR", "NOT",
+"READ", "WRITE", "BEGIN_LOOP", "END_LOOP", "CONTINUE", "IN", "WHILE", "DO", "FOR",
+"OF", "BEGIN_BODY", "END_BODY", "INTEGER", "ARRAY", "FUNCTION", "BEGIN_PARMS", "END_PARMS",
+"BEGIN_LOCALS", "END_LOCALS", "if", "endif", "else", "then", "true", "false", "return", "and", "or", "not", "read", "write", "beginloop", "endloop", "continue", "in", "while", "do", "for", "of", "beginbody", "endbody", "integer", "array", "function", "beginparms", "endparams", "beginlocals", "endlocals"  };
+
+std::map<std::string, int> functions;
+std::map<std::string, int> variables;
 %}
 
 %union {
   char* ident_val;
   int number_val;
+  struct E {
+	char* place; 
+	char* code;
+	bool array;
+ }expr;
+
+ struct S {
+
+	char* code;
+ }stat;
+
 }
 
 
@@ -16,6 +46,14 @@ int yyerror(const char* x);
 
 %type <ident_val> IDENT
 %type <number_val> NUMBER
+
+%type <expr> FunctionIdent LocalIdent Ident
+%type <expr> Vars Var Declarations Declaration Identifiers
+%type <stat> Statement ElseStatment Statements
+%type <expr> Expressions Expression RelationExp RelationExpr0 MultiplicativeExpression BoolExp Comp Term
+
+
+
 
 %token RETURN
 %token TRUE
@@ -62,19 +100,78 @@ int yyerror(const char* x);
 
 %%
 
-Program: Function Program {printf("Program --> Function Program\n");} | %empty {printf("Program --> epsilon\n");}
+Program: Function Program | %empty {
+	std::string tempPname = "main";
+	if (functions.find(tempPname) == functions.end()) {
+		char errorTemp[128];
+		snprintf(errorTemp, 128, "Function main not find");
+		yyerror(errorTemp);
+	}
+
+	if (variables.find(std::string(pName) != variables.end()) {
+		char errorTemp[128];
+		snprintf(errorTemp, 128, "Made program name a variable");
+		yyerror(errorTemp);
+	}
+
+
+
+}
 ;
 
-Function: FUNCTION Ident SEMICOLON BEGIN_PARAMS Declarations END_PARAMS BEGIN_LOCALS Declarations END_LOCALS BEGIN_BODY Statements END_BODY {printf("Function --> Function Ident SEMICOLON BEGIN_PARAMS Declarations END_PARAMS BEGIN_LOCALS Declarations END_LOCALS BEGIN_BODY Statements END_BODY\n");}
+Function: FUNCTION Ident SEMICOLON BEGIN_PARAMS Declarations END_PARAMS BEGIN_LOCALS Declarations END_LOCALS BEGIN_BODY Statements END_BODY {
+	std::string temp = "func ";
+	temp.append($2.place);
+	temp.append("\n");
+	temp.append($2.code);
+	temp.append($5.code);
+
+int parsNumber = 0;
+std::string init_pars = $5.code;
+
+while(init_pars.find(".") != std::string kPos) {
+	size_t postion = init_pars.find(".");
+	init_pars.replace(postion, 1, "=");
+	std::string par = ", $";
+	par.apppend(std::to_string(parsNumber++));
+	parappend("\n");
+	init_pars.replace(init_pars.find("\n", postion), 1, par);
+
+}
+
+temp.append(init_pars);
+temp.append($8.code);
+std::string statements($11.code)
+
+//if(statements.find("continue" ) != 
+
+temp.append(statements);
+temp.append("endfunc\n");
+
+
+printf("%s", temp.c_str());
 ; 
 
-Declarations: Declaration SEMICOLON Declarations  {printf("Declarations --> Declaration SEMICOLON Declarations\n");} | %empty {printf("Declarations --> epsilon\n");}
+Declarations: Declaration SEMICOLON Declarations  {
+	std::strind temp;
+	temp.append($1.code);
+	temp.append($3.code);
+	$$.code = strdup(temp.c_str());
+	$$.place = strdup(nothing);
+
+} | %empty {
+	$$.code = strdup(nothing);
+	$$.place = strdup(nothing);
+}
 ;
 
 Declaration: Identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER  {printf("Declaration --> Identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");} | Identifiers COLON INTEGER  {printf("Declaration --> Identifiers COLON INTEGER\n");}
 ;
 
-Identifiers: Ident COMMA Identifiers {printf("Identifiers --> Ident COMMA Identifiers\n");} | Ident {printf("Identifiers --> Ident\n");}
+Identifiers: Ident COMMA Identifiers {printf("Identifiers --> Ident COMMA Identifiers\n");} | Ident {
+	$$.place = strdup($1.place);
+	$$.code = strdup(nothing);
+}
 ;
 
 Statements: Statement SEMICOLON {printf("Statements --> Statement SEMICOLON\n");} | Statement SEMICOLON Statements {printf("Statements --> Statement SEMICOLON Statements\n");}

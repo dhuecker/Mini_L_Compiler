@@ -195,18 +195,74 @@ Statements: Statement SEMICOLON {
 }
 ;
 
-Statement: RETURN Expression {} | 
-CONTINUE {} | WRITE Vars {} | READ Vars {} | FOR Ident BEGIN_LOOP Statements END_LOOP {} | DO BEGIN_LOOP Statements END_LOOP WHILE BoolExpr {} | WHILE BoolExpr BEGIN_LOOP Statements END_LOOP {} | IF BoolExpr THEN Statements ElseStatement ENDIF {} | Var ASSIGN Expression {}
+Statement: RETURN Expression {
+	std::string temp;
+	temp.append($2.code);
+	temp.append("ret ");
+	temp.append($2.place);
+	temp.append("\n");
+	$$.code = strdup(temp.c_str());
+} | 
+CONTINUE {
+	std::string temp = "continue\n";
+	$$.code = strdup(temp.c_str());
+} | WRITE Vars {} | READ Vars {} | FOR Ident BEGIN_LOOP Statements END_LOOP {} | DO BEGIN_LOOP Statements END_LOOP WHILE BoolExpr {} | WHILE BoolExpr BEGIN_LOOP Statements END_LOOP {} | IF BoolExpr THEN Statements ElseStatement ENDIF {} | Var ASSIGN Expression {}
 ;
 
-ElseStatement: ELSE Statements {} | %empty {}
+ElseStatement: ELSE Statements { 
+	$$.code = strdup($2.code);
+
+
+} | %empty {
+	$$.code = strdup(nothing);
+}
 ;
 
 
-Vars: Var COMMA Vars {} | Var {}
+Vars: Var COMMA Vars {
+	std::string temp;
+	temp.append($1.code);
+	if ($1.array)
+		temp.append(".{}| ");
+	else
+		temp.append(".| ");
+
+	temp.append($1.place);
+	temp.append("\n");
+	temp.append($3.code);
+	$$.code = strdup(temp.c_str());
+	$$.place = strdup(nothing);
+
+} | Var {
+	std::string temp;
+	temp.append($1.code);
+	if ($1.array)
+		temp.append(".{}| ");
+	else
+		temp.append(".| ");
+
+	temp.append($1.place);
+	$$.code = strdup(temp.c_str());
+	$$.place = strdup(nothing);
+}
 ;
 
-Var: Ident {} | Ident L_SQUARE_BRACKET Expression R_SQUARE_BRACKET {}
+Var: Ident {
+		//if and else check for errors if time
+	$$.code = strdup(nothing);
+	$$.place = strdup($1.place);
+	$$.array = false;
+
+} | Ident L_SQUARE_BRACKET Expression R_SQUARE_BRACKET {
+		//if and else check for errors if time
+	std::string temp;
+	temp.append($1.place);
+	temp.append(", ");
+	temp.append($3.place);
+	$$.code = strdup($3.code);
+	$$.place = strdup(temp.c_str());
+	$$.array = true;
+}
 ;
 
 Expression: MultiplicativeExpression SUB Expression {} | MultiplicativeExpression ADD Expression {} | MultiplicativeExpression  {}
@@ -228,10 +284,40 @@ BoolExpr: RelationAndExpr OR BoolExpr {} | RelationAndExpr {}
 RelationAndExpr: RelationExpr AND RelationAndExpr {} | RelationExpr {}
 ;
 
-RelationExpr: RelationExpr0 {} | NOT RelationExpr0 {}
+RelationExpr: RelationExpr0 {
+	$$.code = strdup($1.code);
+	$$.place = strdup($1.place);
+} | NOT RelationExpr0 {
+	std::string x = newTemp();
+	std::string temp;
+	temp.append($2.code);
+	temp.append(". ");
+	temp.append(x);
+	temp.append("\n");
+	temp.append("! ");
+	temp.append(x);
+	temp.append(", ");
+	temp.append($2.place);
+	temp.append("\n");
+	$$.code = strdup(temp.c_str());
+	$$.place = strdup(x);
+}
 ;
 
-RelationExpr0: L_PAREN BoolExpr R_PAREN {} | FALSE {} | TRUE {} | Expression Comp Expression {}
+RelationExpr0: L_PAREN BoolExpr R_PAREN {
+	$$.code = strdup($2.code);
+	$$.place = strdup($2.place);
+} | FALSE {
+	char temp[2] = "0";
+	$$.code = strdup(nothing);
+	$$.place = strdup(temp);
+} | TRUE {
+	char temp[2] = "1";
+	$$.code = strdup(nothing);
+	$$.place = strdup(temp);
+} | Expression Comp Expression {
+	//still need to finish to be done with RExp0
+}
 ;
 
 Comp: GTE {

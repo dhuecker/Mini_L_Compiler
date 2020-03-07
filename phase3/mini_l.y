@@ -400,7 +400,142 @@ CONTINUE {
 
 	$$.code = strdup(temp.c_str());
 
-} | DO BEGIN_LOOP Statements END_LOOP WHILE BoolExpr {} | WHILE BoolExpr BEGIN_LOOP Statements END_LOOP {} | IF BoolExpr THEN Statements ElseStatement ENDIF {} | Var ASSIGN Expression {}
+} | DO BEGIN_LOOP Statements END_LOOP WHILE BoolExpr {
+
+	std::string temp;
+	std::string startLoop = newLabel();
+	std::string startWhile = newLabel();
+	std::string statement = $3.code;
+	std::string x;
+	x.append(":= ");
+	x.append(startWhile);
+	
+	while(statement.find("continue") != std::string::npos){
+		statement.replace(statement.find("continue"), 8, x);
+	}
+
+	temp.append(": ");
+	temp.append(startLoop);
+	temp.append("\n");
+	temp.append(statement);
+	temp.append(": ");
+	temp.append(startWhile);
+	temp.append("\n");
+	temp.append($6.code);
+	temp.append("?:= ");
+	temp.append(startLoop);
+	temp.append(", ");
+	temp.append($6.place);
+	temp.append("\n");
+
+	$$.code = strdup(temp.c_str());
+
+} | WHILE BoolExpr BEGIN_LOOP Statements END_LOOP {
+
+	std::string temp;
+	std::string startLoop = newLabel();
+	std::string endLoop = newLabel();
+	std::string startWhile = newLabel();
+	std::string statement = $4.code;
+	std::string x;
+	x.append(":= ");
+	x.append(startWhile);
+	
+	while(statement.find("continue") != std::string::npos){
+		statement.replace(statement.find("continue"), 8, x);
+	}
+
+	temp.append(": ");
+	temp.append(startWhile);
+	temp.append("\n");
+	temp.append($2.code);
+	temp.append("?:= ");
+	temp.append(startLoop);
+	temp.append(", ");
+	temp.append($2.place);
+	temp.append("\n");
+	temp.append(":= ");
+	temp.append(endLoop);
+	temp.append("\n");
+	temp.append(": ");
+	temp.append(startLoop);
+	temp.append("\n");
+	temp.append(statement);
+	temp.append(":= ");
+	temp.append(startWhile);
+	temp.append("\n");
+	temp.append(": ");
+	temp.append(endLoop);
+	temp.append("\n");
+
+	$$.code = strdup(temp.c_str());
+
+} | IF BoolExpr THEN Statements ElseStatement ENDIF {
+
+	std::string temp;
+	std::string then_do = newLabel();
+	std::string next = newLabel();
+//if part
+	temp.append($2.code);
+	temp.append("?:= ");
+	temp.append(then_do);
+	temp.append(", ");
+	temp.append($2.place);
+	temp.append("\n");
+//else 
+	temp.append($5.code);
+	temp.append(":= ");
+	temp.append(next);
+	temp.append("\n");
+
+	temp.append(": ");
+	temp.append(then_do);
+	temp.append("\n");
+
+	temp.append($4.code);
+	temp.append(": ");
+	temp.append(next);
+	temp.append("\n");
+	
+	$$.code = strdup(temp.c_str());
+
+} | Var ASSIGN Expression {
+
+	std::string temp;
+	temp.append($1.code);
+	temp.append($3.code);
+	std::string interm = $3.place;
+
+	if($1.array && $3.array) {
+		interm = newTemp();
+		temp.append(". ");
+		temp.append(interm);
+		temp.append("\n");
+		temp.append("=[] ");
+		temp.append(interm);
+		temp.append(", ");
+		temp.append($3.place);
+		temp.append("\n");
+		temp.append("[]= ");
+	}
+	else if ($1.array){
+		temp.append("[]= ");
+	}
+	else if ($3.array){
+		temp.append("=[] ");
+	}
+	else{
+		temp.append("= ");
+	}
+
+	temp.append($1.place);
+	temp.append(", ");
+	temp.append(interm);
+	temp.append("\n");
+
+	$$.code = strdup(temp.c_str());
+
+}
 ;
 
 ElseStatement: ELSE Statements { 
@@ -801,11 +936,23 @@ Ident: IDENT {
 }
 ;
 
+LocalIdent: IDENT {
+//check for errors if time
 
+	variables.insert(std::pair<std::string,int>(variable, 0));
+	$$.place = strdup($1);
+	$$.code = strdup(nothing); 
+}
+;
 
+FunctionIdent: IDENT {
+//check for errors if time
 
-
-
+	functions.insert(std::pair<std::string,int>($1, 0));
+	$$.place = strdup($1);
+	$$.code = strdup(nothing); 
+}
+;
 
 
 %%
@@ -817,3 +964,22 @@ int yyerror(const char* x) {
   printf("Error: %s at symbol on line %d\n", x, LineRow);
   exit(1);
 }
+
+
+std::string newLabel(){
+	static int n = 0; 
+	std::string temp = 'L' + std::to_string(n++);
+	return temp;
+}
+
+
+std::string newTemp(){
+	static int n = 0; 
+	std::string temp = "_t" + std::to_string(n++);
+	return temp;
+}
+
+
+
+
+

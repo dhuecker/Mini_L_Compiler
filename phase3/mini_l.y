@@ -49,8 +49,8 @@ std::map<std::string, int> variables;
 
 %type <expr> FunctionIdent LocalIdent Ident
 %type <expr> Vars Var Declarations Declaration Identifiers
-%type <stat> Statement ElseStatment Statements
-%type <expr> Expressions Expression RelationExp RelationExpr0 MultiplicativeExpression BoolExp Comp Term
+%type <stat> Statement ElseStatement Statements
+%type <expr> Expressions Expression RelationExpr RelationAndExpr RelationExpr0 MultiplicativeExpression BoolExpr Comp Term
 
 
 
@@ -150,6 +150,7 @@ temp.append("endfunc\n");
 
 
 printf("%s", temp.c_str());
+}
 ; 
 
 Declarations: Declaration SEMICOLON Declarations  {
@@ -207,7 +208,7 @@ f	std::string variable;
 } | Identifiers COLON INTEGER  {
 	std::string vars($1.place);
 	std::string temp;
-f	std::string variable;
+	std::string variable;
 	bool con = true;
 
 	size_t oldk = 0;
@@ -242,6 +243,7 @@ f	std::string variable;
 	variables.insert(std::pair<std::string,int>(variable, 0));
 	oldk = k + 1;	
 	}
+}
 
 	$$.code = strdup(temp.c_str());
 	$$.place = strdup(nothing);
@@ -551,11 +553,11 @@ ElseStatement: ELSE Statements {
 Vars: Var COMMA Vars {
 	std::string temp;
 	temp.append($1.code);
-	if ($1.array)
-		temp.append(".{}| ");
-	else
+	if ($1.array){
+		temp.append(".{}| ");}
+	else{
 		temp.append(".| ");
-
+}
 	temp.append($1.place);
 	temp.append("\n");
 	temp.append($3.code);
@@ -565,16 +567,17 @@ Vars: Var COMMA Vars {
 } | Var {
 	std::string temp;
 	temp.append($1.code);
-	if ($1.array)
+	if ($1.array){
 		temp.append(".{}| ");
-	else
+}
+	else{
 		temp.append(".| ");
-
+}
 	temp.append($1.place);
 	$$.code = strdup(temp.c_str());
 	$$.place = strdup(nothing);
-}
-;
+};
+
 
 Var: Ident {
 		//if and else check for errors if time
@@ -808,6 +811,7 @@ Term: Ident L_PAREN Expressions R_PAREN {
 	else{
 	$$.code = strdup($1.code);
 	$$.place = strdup($1.place);
+}
 }
 ;
 

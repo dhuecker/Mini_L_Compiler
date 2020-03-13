@@ -327,7 +327,7 @@ CONTINUE {
 	std::string endLoop = newLabel();
 	std::string incre = newLabel();
 
-	std::string statement = $6.code;
+	//std::string statement = $6.code;
 	std::string x;
 	
 	x.append(":= ");
@@ -940,7 +940,7 @@ Ident: IDENT {
 }
 ;
 
-LocalIdent: IDENT {
+LocalIdent:   IDENT {
 //check for errors if time
 
 	variables.insert(std::pair<std::string,int>(variable, 0));
@@ -949,7 +949,7 @@ LocalIdent: IDENT {
 }
 ;
 
-FunctionIdent: IDENT {
+FunctionIdent:  IDENT {
 //check for errors if time
 
 	functions.insert(std::pair<std::string,int>($1, 0));

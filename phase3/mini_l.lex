@@ -1,20 +1,21 @@
 %{
 
-char* pName;
-
 int LineRow = 1;
 int LinCol = 0;
 
-#include "y.tab.h" 
 #include <string>
+
+#include "y.tab.h" 
 /*
 static const char* KeyWords[] = {
 "if", "endif", "else", "then", "true", "false", "return", "and", "or", "not", "read", "write", "beginloop", "endloop", "continue", "in", "while", "do", "for", "of", "beginbody", "endbody", "integer", "array", "function", "beginparms", "endparams", "beginlocals", "endlocals" };
+
 static const char* MapWords[] = {
 "IF", "ENDIF", "ELSE", "THEN", "TRUE", "FALSE", "RETURN", "AND", "OR", "NOT",
 "READ", "WRITE", "BEGIN_LOOP", "END_LOOP", "CONTINUE", "IN", "WHILE", "DO", "FOR",
 "OF", "BEGIN_BODY", "END_BODY", "INTEGER", "ARRAY", "FUNCTION", "BEGIN_PARMS", "END_PARMS",
 "BEGIN_LOCALS", "END_LOCALS" };
+
 const int NumWords = sizeof(KeyWords)/ sizeof(KeyWords[0]);
 */
 %}
@@ -65,7 +66,7 @@ CHAR [0-9a-zA-Z_]
 "while" {return WHILE; LinCol += yyleng;}
 "beginloop" {return BEGIN_LOOP; LinCol += yyleng;}
 "endloop" {return END_LOOP; LinCol += yyleng;}
-"for" {return FOR; LinCol += yyleng;}
+"foreach" {return FOREACH; LinCol += yyleng;}
 "in" {return IN; LinCol += yyleng;}
 "if" {return IF; LinCol += yyleng;}
 "then" {return THEN; LinCol += yyleng;}
@@ -88,7 +89,7 @@ CHAR [0-9a-zA-Z_]
 
 {LETTER}({CHAR}*{ALPHANUMBER}+)? {
 
-yylval.ident_val = strdup(yytext);
+yylval.ident_val = yytext;
 return IDENT;
 LinCol += yyleng;
 
@@ -119,9 +120,8 @@ exit(1);
 }
 
 %%
-int yyparse();
 
-int main(int argc, char* argv[]){
+int main(int argc, char ** argv){
 
 if (argc == 2){
 yyin = fopen(argv[1], "r");
@@ -133,10 +133,9 @@ exit(1);
 else {
   yyin = stdin;
 }
-
-pName = strdup(argv[1]);
   yyparse();
 
   return 0;
 }
+
 

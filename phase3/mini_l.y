@@ -1,4 +1,5 @@
 %{
+#include <stdbool.h>
 #include <map.h>
 #include <vector>
 #include <string.h>

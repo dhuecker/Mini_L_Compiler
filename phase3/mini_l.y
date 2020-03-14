@@ -963,7 +963,7 @@ FunctionIdent:  IDENT {
 
 %%
 
-int yyerror(const char* x) {
+void yyerror(const char* x) {
   extern char* yytext;
   extern int LineRow;
 

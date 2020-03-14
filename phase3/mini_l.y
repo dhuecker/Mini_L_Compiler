@@ -135,8 +135,8 @@ while(init_pars.find(".") != std::string::npos) {
 	size_t postion = init_pars.find(".");
 	init_pars.replace(postion, 1, "=");
 	std::string par = ", $";
-	par.apppend(std::to_string(parsNumber++));
-	parappend("\n");
+	par.append(std::to_string(parsNumber++));
+	par.append("\n");
 	init_pars.replace(init_pars.find("\n", postion), 1, par);
 
 }

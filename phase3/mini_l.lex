@@ -120,6 +120,7 @@ exit(1);
 
 %%
 int yyparse();
+int yylex();
 
 int main(int argc, char* argv[]){
 

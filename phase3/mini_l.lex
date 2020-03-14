@@ -6,7 +6,7 @@ int LineRow = 1;
 int LinCol = 0;
 
 #include "y.tab.h" 
-#include <string>
+#include <string.h>
 /*
 static const char* KeyWords[] = {
 "if", "endif", "else", "then", "true", "false", "return", "and", "or", "not", "read", "write", "beginloop", "endloop", "continue", "in", "while", "do", "for", "of", "beginbody", "endbody", "integer", "array", "function", "beginparms", "endparams", "beginlocals", "endlocals" };

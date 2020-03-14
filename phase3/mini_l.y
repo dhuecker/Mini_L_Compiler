@@ -359,7 +359,7 @@ CONTINUE {
 	temp.append(", ");
 	temp.append(count);
 	temp.append(", ");
-	temp.append(std::to_string(variables.find(std::string($4.place))->second));
+	//temp.append(std::to_string(variables.find(std::string($4.place))->second));
 	temp.append("\n");
 
 	temp.append("?:= ");
@@ -379,11 +379,11 @@ CONTINUE {
 	temp.append("=[] ");
 	temp.append($2.place);
 	temp.append(", ");
-	temp.append($4.place);
+	//temp.append($4.place);
 	temp.append(", ");
 	temp.append(count);
 	temp.append("\n");
-	temp.append(statement);
+	//temp.append(statement);
 
 	temp.append(": ");
 	temp.append(incre);
@@ -888,7 +888,7 @@ RelationExpr: RelationExpr0 {
 	temp.append($2.place);
 	temp.append("\n");
 	$$.code = strdup(temp.c_str());
-	$$.place = strdup(x);
+	$$.place = strdup(x.c_str());
 }
 ;
 

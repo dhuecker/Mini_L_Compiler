@@ -143,7 +143,7 @@ while(init_pars.find(".") != std::string::npos) {
 
 temp.append(init_pars);
 temp.append($8.code);
-std::string statements($11.code)
+std::string statements($11.code);
 
 //if(statements.find("continue" ) != 
 
@@ -180,7 +180,7 @@ Declaration: Identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF
 	
 	while(con) {
 		k = vars.find("|", oldk);
-		if(k == std::string::np){
+		if(k == std::string::npos){
 			temp.append(". [] ");
 			variable = vars.substr(oldk, k);
 			temp.append(variable);
@@ -219,7 +219,7 @@ Declaration: Identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF
 
 	while(con){
 		k = vars.find("|", oldk);
-		if(k == std::string::np){
+		if(k == std::string::npos){
 			temp.append(". ");
 			variable = vars.substr(oldk, k);
 			temp.append(variable);
@@ -298,7 +298,7 @@ CONTINUE {
 
 	do{
 		x = temp.find("|", x);
-		if (x == std::string::np)
+		if (x == std::string::npos)
 			break;
 		temp.replace(x, 1, ">");
 	} while(true);
@@ -312,7 +312,7 @@ CONTINUE {
 
 	do{
 		x = temp.find("|", x);
-		if (x == std::string::np)
+		if (x == std::string::npos)
 			break;
 		temp.replace(x, 1, ">");
 	} while(true);

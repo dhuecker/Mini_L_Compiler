@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <string.h>
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #define YY_NO_UNPUT

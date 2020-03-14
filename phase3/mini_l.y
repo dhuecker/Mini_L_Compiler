@@ -32,7 +32,7 @@ std::map<std::string, int> variables;
   struct E {
 	char* place; 
 	char* code;
-	std::bool array;
+	bool array;
  }expr;
 
  struct S {

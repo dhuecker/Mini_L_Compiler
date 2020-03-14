@@ -103,7 +103,7 @@ std::map<std::string, int> variables;
 %%
 
 Program: Function Program | %empty {
-	std::string tempPname = "main";
+	/*std::string tempPname = "main";
 	if (functions.find(tempPname) == functions.end()) {
 		char errorTemp[128];
 		snprintf(errorTemp, 128, "Function main not find");
@@ -115,7 +115,7 @@ Program: Function Program | %empty {
 		snprintf(errorTemp, 128, "Made program name a variable");
 		yyerror(errorTemp);
 	}
-
+*/
 
 
 }
@@ -131,7 +131,7 @@ Function: FUNCTION Ident SEMICOLON BEGIN_PARAMS Declarations END_PARAMS BEGIN_LO
 int parsNumber = 0;
 std::string init_pars = $5.code;
 
-while(init_pars.find(".") != std::string kPos) {
+while(init_pars.find(".") != std::string::npos) {
 	size_t postion = init_pars.find(".");
 	init_pars.replace(postion, 1, "=");
 	std::string par = ", $";
@@ -156,7 +156,7 @@ printf("%s", temp.c_str());
 ; 
 
 Declarations: Declaration SEMICOLON Declarations  {
-	std::strind temp;
+	std::string temp;
 	temp.append($1.code);
 	temp.append($3.code);
 	$$.code = strdup(temp.c_str());
@@ -172,7 +172,7 @@ Declaration: Identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF
 	//if($5 <0) error
 	std::string vars($1.place);
 	std::string temp;
-f	std::string variable;
+	std::string variable;
 	bool con = true;
 
 	size_t oldk = 0;
@@ -180,7 +180,7 @@ f	std::string variable;
 	
 	while(con) {
 		k = vars.find("|", oldk);
-		if(k == std::string::nk){
+		if(k == std::string::np){
 			temp.append(". [] ");
 			variable = vars.substr(oldk, k);
 			temp.append(variable);
@@ -219,7 +219,7 @@ f	std::string variable;
 
 	while(con){
 		k = vars.find("|", oldk);
-		if(k == std::string::nk){
+		if(k == std::string::np){
 			temp.append(". ");
 			variable = vars.substr(oldk, k);
 			temp.append(variable);
@@ -236,7 +236,7 @@ f	std::string variable;
 }
 
 //if check for errors if time again
-	for(unsigned int i = 0; i < mapWords.size(); ++1){
+	for(unsigned int i = 0; i < mapWords.size(); ++i){
 		if(mapWords.at(i) == variable) {
 			isKey = true;
 
@@ -298,7 +298,7 @@ CONTINUE {
 
 	do{
 		x = temp.find("|", x);
-		if (x == std::string::nx)
+		if (x == std::string::np)
 			break;
 		temp.replace(x, 1, ">");
 	} while(true);
@@ -312,7 +312,7 @@ CONTINUE {
 
 	do{
 		x = temp.find("|", x);
-		if (x == std::string::nx)
+		if (x == std::string::np)
 			break;
 		temp.replace(x, 1, ">");
 	} while(true);
@@ -334,9 +334,9 @@ CONTINUE {
 	
 	x.append(":= ");
 	x.append(incre);
-	while(statement.find("continue") != std::string::kpos){
-		statements.replace(statement.find("continue"), 8, x);
-	}
+	//while(statement.find("continue") != std::string::kpos){
+	//	statements.replace(statement.find("continue"), 8, x);
+	//}
 
 //check for errors if time here
 

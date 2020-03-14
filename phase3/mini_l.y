@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #define YY_NO_UNPUT
 void yyerror(const char* x);
+int yylex();
 std::string newLabel();
 std::string newTemp();
 char nothing[1] = "";

@@ -119,6 +119,7 @@ exit(1);
 }
 
 %%
+
 int yyparse();
 int yylex();
 
@@ -137,7 +138,7 @@ else {
 
 pName = strdup(argv[1]);
 
-	yylex();
+	//yylex();
   yyparse();
 
   return 0;

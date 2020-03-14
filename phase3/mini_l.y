@@ -1,5 +1,5 @@
 %{
-#include <map>
+#include <map.h>
 #include <vector>
 #include <string.h>
 #include <stdio.h>

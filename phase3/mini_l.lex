@@ -136,6 +136,8 @@ else {
 }
 
 pName = strdup(argv[1]);
+
+	yylex();
   yyparse();
 
   return 0;

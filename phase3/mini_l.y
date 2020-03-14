@@ -1,6 +1,6 @@
 %{
 #include <stdbool.h>
-#include <map.h>
+#include <map>
 #include <vector>
 #include <string.h>
 #include <stdio.h>
